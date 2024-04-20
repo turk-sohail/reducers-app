@@ -1,35 +1,36 @@
 import { useReducer } from "react"
+import { produce } from "immer";
 
 const INCREMENT = "increment";
 const DECREMENT = "decrement";
 const SETVAL = "setVal";
 const SUBMITVAL = "submitVal";
+const RESETVAL = "reset"
 
 
 function App() {
   const reducer = (state, action) => {
     switch (action.type) {
       case INCREMENT:
-        return {
-          ...state,
-          count: state.count + 1
-        }
+        state.count = state.count + 1
+        return
       case DECREMENT:
-        return {
-          ...state,
-          count: state.count - 1
-        }
+        state.count = state.count - 1
+        return
       case SETVAL:
-        return {
-          ...state,
-          value: action.payload
-        }
+        state.value = action.payload
+        return
 
       case SUBMITVAL:
-        return {
-          ...state,
-          count: state.count + state.value
-        }
+        state.count = state.count + state.value
+        state.value = 0
+        return;
+
+      // case RESETVAL:
+      //   return {
+      //     ...state,
+      //     count: state.value = 0
+      //   }
 
       default:
         return state
@@ -40,7 +41,7 @@ function App() {
   // const [count, setCount] = useState(0);
   // const [value, setValue] = useState(0);
 
-  const [state, dispatch] = useReducer(reducer, {
+  const [state, dispatch] = useReducer(produce(reducer), {
     count: 0,
     value: 0
   })
@@ -71,6 +72,10 @@ function App() {
     e.preventDefault();
     dispatch({
       type: SUBMITVAL
+    })
+    dispatch({
+      type: SETVAL,
+      payload: 0
     })
   }
 
